@@ -1,0 +1,4 @@
+# Disable Jekyll processing — serve files as-is
+# This ensures .well-known/ and other folders are served correctly
+include:
+  - .well-known

@@ -3,61 +3,604 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joining Sixth Orbit…</title>
+<title>JellyToot — Wear OS Apps</title>
+<meta name="description" content="Precision apps for Wear OS. Built for the wrist. Every app does one thing exceptionally well.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #0a0a0f;
-    color: #f0f0f8;
-    font-family: system-ui, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    text-align: center;
-  }
-  .pulse {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    background: #4a9eff22;
-    border: 2px solid #4a9eff;
-    margin: 0 auto 24px;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.15); opacity: 0.6; }
-  }
-  h1 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-  p { color: #8a8a9a; font-size: 15px; line-height: 1.6; max-width: 320px; }
-  .badge {
-    margin-top: 32px;
-    background: #1c1c26;
-    border: 1px solid #2a2a3a;
-    border-radius: 12px;
-    padding: 16px 24px;
-    font-size: 13px;
-    color: #8a8a9a;
-  }
-  .badge a { color: #4a9eff; text-decoration: none; }
+:root {
+  --bg:       #08080d;
+  --surface:  #0f0f17;
+  --card:     #13131e;
+  --border:   #1e1e2e;
+  --text:     #eeeef5;
+  --muted:    #7070888;
+  --dim:      #404058;
+  --mono:     'DM Mono', monospace;
+  --display:  'Syne', sans-serif;
+  --body:     'DM Sans', sans-serif;
+
+  /* App accent colors */
+  --sixth:    #4a9eff;
+  --signal:   #ff6b9d;
+  --kin:      #2dd4a0;
+  --flick:    #f0b429;
+  --rite:     #a78bfa;
+  --watchkeys:#ff8c42;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 48px;
+  overflow: hidden;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -200px; left: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(74,158,255,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-glow-2 {
+  position: absolute;
+  bottom: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(45,212,160,0.04) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sixth);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--sixth);
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+  max-width: 800px;
+}
+
+.hero h1 .accent { color: var(--sixth); }
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: #8888a0;
+  font-weight: 300;
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.hero-stat strong {
+  display: block;
+  font-size: 14px;
+  color: #9090a8;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+/* ── Watch visual ── */
+.watch-visual {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 180px;
+}
+
+.watch-face {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow:
+    0 0 0 8px #0f0f17,
+    0 0 0 9px #1e1e2e,
+    0 40px 80px rgba(0,0,0,0.6);
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.watch-ring {
+  position: absolute;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  border: 1px solid rgba(74,158,255,0.15);
+  animation: ring-pulse 3s ease-in-out infinite;
+}
+
+.watch-ring-2 {
+  width: 210px; height: 210px;
+  border-color: rgba(74,158,255,0.07);
+  animation-delay: 0.5s;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.05); }
+}
+
+.watch-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--sixth);
+  animation: dot-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 12px var(--sixth);
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ── Section ── */
+section {
+  padding: 80px 48px;
+  position: relative;
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+
+.section-sub {
+  color: #8888a0;
+  font-size: 16px;
+  font-weight: 300;
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+/* ── Apps grid ── */
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.app-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.app-card:hover {
+  transform: translateY(-2px);
+}
+
+.app-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent, #4a9eff), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.app-card:hover::before { opacity: 1; }
+
+.app-card-glow {
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.app-number {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--dim);
+  margin-bottom: 20px;
+}
+
+.app-name {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.app-tagline {
+  font-size: 13px;
+  color: #8888a0;
+  font-weight: 300;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.app-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+
+.app-status .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+
+.status-live .dot { background: #2dd4a0; box-shadow: 0 0 6px #2dd4a0; }
+.status-beta .dot { background: #f0b429; }
+.status-soon .dot { background: var(--dim); }
+
+/* ── Principles ── */
+.principles {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 40px;
+  margin-top: 48px;
+}
+
+.principle {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.principle-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.1em;
+}
+
+.principle-title {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.principle-body {
+  font-size: 14px;
+  color: #8888a0;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* ── Footer ── */
+footer {
+  padding: 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: gap;
+  gap: 16px;
+}
+
+.footer-brand {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+
+.footer-links a:hover { color: var(--text); }
+
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 48px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero, section, footer { padding: 60px 24px; }
+  .divider { margin: 0 24px; }
+  .watch-visual { display: none; }
+  footer { flex-direction: column; align-items: flex-start; }
+}
 </style>
 </head>
 <body>
-<div class="pulse"></div>
-<h1>Opening Sixth…</h1>
-<p>If the app doesn't open, make sure Sixth is installed on your device.</p>
-<div class="badge">
-  Don't have Sixth? <a href="https://play.google.com/store/apps/details?id=com.sixth.app">Get it on Google Play</a>
-</div>
-<script>
-  // Pass all query params through to the app deep link
-  const params = window.location.search;
-  const deepLink = 'sixth://join' + params;
-  window.location.href = deepLink;
-  // Fallback — if app not installed, stay on page
-  setTimeout(() => {}, 2000);
-</script>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+
+  <div class="hero-eyebrow">JellyToot</div>
+
+  <h1>Apps built for<br>the <span class="accent">wrist.</span></h1>
+
+  <p class="hero-sub">
+    Precision Wear OS apps. Each one does a single thing exceptionally well — glanceable, haptic-driven, and impossible to do better on a phone.
+  </p>
+
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <strong>Wear OS</strong>
+      Platform
+    </div>
+    <div class="hero-stat">
+      <strong>Galaxy Watch</strong>
+      Primary Target
+    </div>
+    <div class="hero-stat">
+      <strong>Indie</strong>
+      Developer
+    </div>
+  </div>
+
+  <!-- Floating watch -->
+  <div class="watch-visual">
+    <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+      <div class="watch-ring watch-ring-2"></div>
+      <div class="watch-ring"></div>
+      <div class="watch-face">
+        <div class="watch-dot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Apps -->
+<section>
+  <div class="section-label">The Suite</div>
+  <h2 class="section-title">Five pillars.<br>One wrist.</h2>
+  <p class="section-sub">A suite of apps sharing a common philosophy — use the watch for what only the watch can do.</p>
+
+  <div class="apps-grid">
+
+    <!-- WatchKeys -->
+    <a class="app-card" href="https://play.google.com/store/apps/details?id=com.watchkeys" style="--accent: var(--watchkeys);">
+      <div class="app-card-glow" style="background: var(--watchkeys);"></div>
+      <div class="app-number">00 — Utility</div>
+      <div class="app-name" style="color: var(--watchkeys);">WatchKeys</div>
+      <div class="app-tagline">A gesture keyboard for Wear OS. Tap for the first letter, swipe for the second. No tiny keys.</div>
+      <div class="app-status status-live">
+        <span class="dot"></span> Live on Play Store
+      </div>
+    </a>
+
+    <!-- Sixth -->
+    <div class="app-card" style="--accent: var(--sixth);">
+      <div class="app-card-glow" style="background: var(--sixth);"></div>
+      <div class="app-number">01 — Spatial</div>
+      <div class="app-name" style="color: var(--sixth);">Sixth</div>
+      <div class="app-tagline">Feel when the people you care about are near. A presence network that speaks in haptic pulses.</div>
+      <div class="app-status status-beta">
+        <span class="dot"></span> In Development
+      </div>
+    </div>
+
+    <!-- Signal -->
+    <div class="app-card" style="--accent: var(--signal);">
+      <div class="app-card-glow" style="background: var(--signal);"></div>
+      <div class="app-number">02 — Communication</div>
+      <div class="app-name" style="color: var(--signal);">Signal</div>
+      <div class="app-tagline">Send meaning without words. Pre-agreed haptic patterns sent wrist-to-wrist. No glance required.</div>
+      <div class="app-status status-soon">
+        <span class="dot"></span> Coming Soon
+      </div>
+    </div>
+
+    <!-- Kin -->
+    <div class="app-card" style="--accent: var(--kin);">
+      <div class="app-card-glow" style="background: var(--kin);"></div>
+      <div class="app-number">03 — Behavioral</div>
+      <div class="app-name" style="color: var(--kin);">Kin</div>
+      <div class="app-tagline">Your watch learns your patterns and acts on them before you feel the need. Quiet intelligence on your wrist.</div>
+      <div class="app-status status-soon">
+        <span class="dot"></span> Coming Soon
+      </div>
+    </div>
+
+    <!-- Flick -->
+    <div class="app-card" style="--accent: var(--flick);">
+      <div class="app-card-glow" style="background: var(--flick);"></div>
+      <div class="app-number">04 — Gesture</div>
+      <div class="app-name" style="color: var(--flick);">Flick</div>
+      <div class="app-tagline">Map wrist gestures to actions. The fastest input method you've never used.</div>
+      <div class="app-status status-soon">
+        <span class="dot"></span> Coming Soon
+      </div>
+    </div>
+
+    <!-- Rite -->
+    <div class="app-card" style="--accent: var(--rite);">
+      <div class="app-card-glow" style="background: var(--rite);"></div>
+      <div class="app-number">05 — Game</div>
+      <div class="app-name" style="color: var(--rite);">Rite</div>
+      <div class="app-tagline">A wizard PVP battle game played entirely through wrist gestures. Cast spells. Defeat your opponent.</div>
+      <div class="app-status status-soon">
+        <span class="dot"></span> Coming Soon
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Principles -->
+<section class="principles">
+  <div class="section-label">Philosophy</div>
+  <h2 class="section-title">Every decision<br>has a reason.</h2>
+
+  <div class="principles-grid">
+    <div class="principle">
+      <div class="principle-num">01</div>
+      <div class="principle-title">Wrist-first</div>
+      <div class="principle-body">If a phone app does it better, we don't build it. Every feature earns its place on your wrist.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">02</div>
+      <div class="principle-title">Haptic language</div>
+      <div class="principle-body">All apps share one haptic ecosystem. Signals have internal structure — they feel deliberate, not like notifications.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">03</div>
+      <div class="principle-title">No subscription</div>
+      <div class="principle-body">One-time purchase. No recurring fees, no pay-to-win, no deception. You buy it, you own it.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">04</div>
+      <div class="principle-title">Privacy by design</div>
+      <div class="principle-body">No cloud dependency for core features. Behavioral data never leaves your device. Presence is consent-based.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">05</div>
+      <div class="principle-title">Battery honest</div>
+      <div class="principle-body">No unjustifiable always-on drain. Every background process has a measurable benefit that justifies its cost.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-num">06</div>
+      <div class="principle-title">Solo built</div>
+      <div class="principle-body">One developer. Every feature is scoped to what can be built and maintained with full attention to quality.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-brand">JellyToot</div>
+  <ul class="footer-links">
+    <li><a href="/privacy">Privacy Policy</a></li>
+    <li><a href="https://play.google.com/store/apps/developer?id=JellyToot">Play Store</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 JellyToot. All rights reserved.</div>
+</footer>
+
 </body>
 </html>

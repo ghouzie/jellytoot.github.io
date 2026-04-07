@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joining Sixth Orbit…</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    color: #f0f0f8;
+    font-family: system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+  .pulse {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: #4a9eff22;
+    border: 2px solid #4a9eff;
+    margin: 0 auto 24px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.6; }
+  }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+  p { color: #8a8a9a; font-size: 15px; line-height: 1.6; max-width: 320px; }
+  .badge {
+    margin-top: 32px;
+    background: #1c1c26;
+    border: 1px solid #2a2a3a;
+    border-radius: 12px;
+    padding: 16px 24px;
+    font-size: 13px;
+    color: #8a8a9a;
+  }
+  .badge a { color: #4a9eff; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="pulse"></div>
+<h1>Opening Sixth…</h1>
+<p>If the app doesn't open, make sure Sixth is installed on your device.</p>
+<div class="badge">
+  Don't have Sixth? <a href="https://play.google.com/store/apps/details?id=com.sixth.app">Get it on Google Play</a>
+</div>
+<script>
+  // Pass all query params through to the app deep link
+  const params = window.location.search;
+  const deepLink = 'sixth://join' + params;
+  window.location.href = deepLink;
+  // Fallback — if app not installed, stay on page
+  setTimeout(() => {}, 2000);
+</script>
+</body>
+</html>
